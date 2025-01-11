@@ -1,5 +1,6 @@
 package ru.rogotovskiy.book_api.handler;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -10,6 +11,7 @@ import ru.rogotovskiy.book_api.exceptions.ObjectNotFoundException;
 
 import java.time.LocalDateTime;
 
+@Hidden
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
