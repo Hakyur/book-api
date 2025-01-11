@@ -6,15 +6,15 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.rogotovskiy.book_api.dto.ErrorResponse;
 import ru.rogotovskiy.book_api.exceptions.DuplicateGenreException;
-import ru.rogotovskiy.book_api.exceptions.GenreNotFoundException;
+import ru.rogotovskiy.book_api.exceptions.ObjectNotFoundException;
 
 import java.time.LocalDateTime;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(GenreNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleGenreNotFoundException(GenreNotFoundException e) {
+    @ExceptionHandler(ObjectNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleGenreNotFoundException(ObjectNotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(toErrorResponse(e));
     }
 
