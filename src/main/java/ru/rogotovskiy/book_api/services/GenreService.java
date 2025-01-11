@@ -7,6 +7,7 @@ import ru.rogotovskiy.book_api.exceptions.DuplicateGenreException;
 import ru.rogotovskiy.book_api.exceptions.GenreNotFoundException;
 import ru.rogotovskiy.book_api.repository.GenreRepository;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -25,12 +26,16 @@ public class GenreService {
         return genreRepository.findAll();
     }
 
-    public GenreDTO getById(Integer id) {
-        Genre genre = genreRepository.findById(id).orElseThrow(
+    public Genre getGenreById(Integer id) {
+        return genreRepository.findById(id).orElseThrow(
                 () -> new GenreNotFoundException(
                         String.format(GENRE_NOT_FOUND_MESSAGE, id)
                 )
         );
+    }
+
+    public GenreDTO getById(Integer id) {
+        Genre genre = getGenreById(id);
         return toDTO(genre);
     }
 
@@ -44,30 +49,22 @@ public class GenreService {
     }
 
     public void deleteGenre(Integer id) {
-        Genre genre = genreRepository.findById(id).orElseThrow(
-                () -> new GenreNotFoundException(
-                        String.format(GENRE_NOT_FOUND_MESSAGE, id)
-                )
-        );
+        Genre genre = getGenreById(id);
         genreRepository.delete(genre);
     }
 
     public void updateGenre(Integer id, GenreDTO genreDTO) {
-        Genre genre = genreRepository.findById(id).orElseThrow(
-                () -> new GenreNotFoundException(
-                        String.format(GENRE_NOT_FOUND_MESSAGE, id)
-                )
-        );
+        Genre genre = getGenreById(id);
         genre.setName(genreDTO.name());
         genre.setDescription(genreDTO.description());
         genreRepository.save(genre);
     }
 
-    private Genre toEntity(GenreDTO genreDTO) {
-        return new Genre(null, genreDTO.name(), genreDTO.description());
+    protected Genre toEntity(GenreDTO genreDTO) {
+        return new Genre(null, genreDTO.name(), genreDTO.description(), Collections.emptyList());
     }
 
-    private GenreDTO toDTO(Genre genre) {
+    protected GenreDTO toDTO(Genre genre) {
         return new GenreDTO(genre.getName(), genre.getDescription());
     }
 }

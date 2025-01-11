@@ -6,6 +6,7 @@ import ru.rogotovskiy.book_api.entity.Author;
 import ru.rogotovskiy.book_api.exceptions.AuthorNotFoundException;
 import ru.rogotovskiy.book_api.repository.AuthorRepository;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -23,12 +24,16 @@ public class AuthorService {
         return authorRepository.findAll();
     }
 
-    public AuthorDTO getById(Integer id) {
-        Author author = authorRepository.findById(id).orElseThrow(
+    public Author getAuthorById(Integer id) {
+        return authorRepository.findById(id).orElseThrow(
                 () -> new AuthorNotFoundException(
                         String.format(AUTHOR_NOT_FOUND_MESSAGE, id)
                 )
         );
+    }
+
+    public AuthorDTO getById(Integer id) {
+        Author author = getAuthorById(id);
         return toDTO(author);
     }
 
@@ -37,31 +42,23 @@ public class AuthorService {
     }
 
     public void deleteAuthor(Integer id) {
-        Author author = authorRepository.findById(id).orElseThrow(
-                () -> new AuthorNotFoundException(
-                        String.format(AUTHOR_NOT_FOUND_MESSAGE, id)
-                )
-        );
+        Author author = getAuthorById(id);
         authorRepository.delete(author);
     }
 
     public void updateAuthor(Integer id, AuthorDTO authorDTO) {
-        Author author = authorRepository.findById(id).orElseThrow(
-                () -> new AuthorNotFoundException(
-                        String.format(AUTHOR_NOT_FOUND_MESSAGE, id)
-                )
-        );
+        Author author = getAuthorById(id);
         author.setName(authorDTO.name());
         author.setSurname(authorDTO.surname());
         author.setPatronymic(authorDTO.patronymic());
         authorRepository.save(author);
     }
 
-    private AuthorDTO toDTO(Author author) {
+    protected AuthorDTO toDTO(Author author) {
         return new AuthorDTO(author.getName(), author.getSurname(), author.getPatronymic());
     }
 
-    private Author toEntity(AuthorDTO authorDTO) {
-        return new Author(null, authorDTO.name(), authorDTO.surname(), authorDTO.patronymic());
+    protected Author toEntity(AuthorDTO authorDTO) {
+        return new Author(null, authorDTO.name(), authorDTO.surname(), authorDTO.patronymic(), Collections.emptyList());
     }
 }
