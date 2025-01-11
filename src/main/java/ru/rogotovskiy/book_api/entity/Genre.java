@@ -1,6 +1,9 @@
 package ru.rogotovskiy.book_api.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 @Table(name = "genres")
@@ -14,10 +17,15 @@ public class Genre {
 
     private String description;
 
-    public Genre(Integer id, String name, String description) {
+    @OneToMany(mappedBy = "genre", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Book> books;
+
+    public Genre(Integer id, String name, String description, List<Book> books) {
         this.id = id;
         this.name = name;
         this.description = description;
+        this.books = books;
     }
 
     public Genre() {
@@ -45,5 +53,13 @@ public class Genre {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public List<Book> getBooks() {
+        return books;
+    }
+
+    public void setBooks(List<Book> books) {
+        this.books = books;
     }
 }

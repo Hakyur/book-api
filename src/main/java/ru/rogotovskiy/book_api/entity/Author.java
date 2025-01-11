@@ -1,6 +1,9 @@
 package ru.rogotovskiy.book_api.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 @Table(name = "authors")
@@ -17,11 +20,16 @@ public class Author {
 
     private String patronymic;
 
-    public Author(Integer id, String name, String surname, String patronymic) {
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Book> books;
+
+    public Author(Integer id, String name, String surname, String patronymic, List<Book> books) {
         this.id = id;
         this.name = name;
         this.surname = surname;
         this.patronymic = patronymic;
+        this.books = books;
     }
 
     public Author() {
@@ -57,5 +65,13 @@ public class Author {
 
     public void setPatronymic(String patronymic) {
         this.patronymic = patronymic;
+    }
+
+    public List<Book> getBooks() {
+        return books;
+    }
+
+    public void setBooks(List<Book> books) {
+        this.books = books;
     }
 }
